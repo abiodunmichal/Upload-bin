@@ -1,26 +1,37 @@
+name: Build ESP32-S3 Blink
+
 on:
   push:
-    tags-ignore:
-      - "**"
-  pull_request:
-    branches: [main]
+    branches:
+      - main        # run on any push to main branch
+
 jobs:
   build:
-    name: Build
+    name: Build Firmware
     runs-on: ubuntu-latest
+
     steps:
+      # Step 1: Checkout the repo
       - name: Checkout repo
         uses: actions/checkout@v4
-      - name: Set up python
+
+      # Step 2: Set up Python
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.x"
           architecture: "x64"
+
+      # Step 3: Install PlatformIO
       - name: Install PlatformIO
         run: python3 -m pip install platformio==6.1.18
+
+      # Step 4: Build the firmware
       - name: Build firmwares
         run: FIRMWARE_VERSION=main platformio run
-      - name: Archive
+
+      # Step 5: Upload firmware artifacts
+      - name: Archive firmware
         uses: actions/upload-artifact@v4
         with:
           name: firmware
